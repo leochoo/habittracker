@@ -1,0 +1,28 @@
+# Data structure
+
+
+
+class Habit {
+    name: input
+    color: input, default
+    startDate: input, default 
+
+    checkIns: [ ] # array of dates with habit checked
+    
+    # function
+    addHabit(
+
+    deleteHabit()
+
+}
+
+class Analytics {
+
+    showBasicStats(habit){
+        streak
+        bestStreakSoFar
+        successRate
+    }
+
+
+}
