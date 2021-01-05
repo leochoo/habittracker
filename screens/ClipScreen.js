@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, TouchableOpacity, Text } from 'react-native';
-import { WebView } from 'react-native-webview';
-import { useDispatch } from 'react-redux';
-import { addClip, deleteClip } from '../store/actions/user';
+import { useSelector } from 'react-redux';
+import { StyleSheet, SafeAreaView, Text, FlatList } from 'react-native';
+import ListItem from '../components/ListItem';
 
 const styles = StyleSheet.create({
     container: {
@@ -11,10 +10,28 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ClipScreen = ({ route }) => {
+export default ClipScreen = ({ navigation }) => {
+    const user = useSelector((state) => state.user);
+    const { clips } = user;
+
     return (
         <SafeAreaView style={styles.container}>
-            <Text>clip screen</Text>
+            <FlatList
+                data={clips}
+                renderItem={({ item }) => (
+                    <ListItem
+                        imageUrl={item.urlToImage}
+                        title={item.title}
+                        author={item.author}
+                        onPress={() =>
+                            navigation.navigate('Article', {
+                                article: item,
+                            })
+                        }
+                    />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
         </SafeAreaView>
     );
 };
