@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, SafeAreaView } from 'react-native';
-import ListItem from '../components/ListItem';
+import {
+    StyleSheet,
+    View,
+    FlatList,
+    SafeAreaView,
+    Text,
+    StatusBar,
+} from 'react-native';
+import HabitItem from '../components/HabitItem';
 import Constants from 'expo-constants';
 import axios from 'axios';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 
-const URL = `http://newsapi.org/v2/top-headlines?country=jp&apiKey=${Constants.manifest.extra.newsApiKey}`;
+// const URL = `http://newsapi.org/v2/top-headlines?country=jp&apiKey=${Constants.manifest.extra.newsApiKey}`;
+const DATA = [
+    {
+        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+        title: 'Work Out',
+    },
+    {
+        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+        title: 'Drink Water',
+    },
+    {
+        id: '58694a0f-3da1-471f-bd96-145571e29d72',
+        title: 'Pay Respect to HHLAB',
+    },
+];
 
 const styles = StyleSheet.create({
     container: {
@@ -15,23 +36,12 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen = (props) => {
-    const { navigation } = props;
-
-    const [articles, setArticles] = useState([]);
-
     useEffect(() => {
-        fetchArticles();
+        // fetchArticles();
+        fetchHabits();
     }, []); // by passing an empty array as parameter, it only works when mounted.
 
-    const fetchArticles = async () => {
-        try {
-            const response = await axios.get(URL);
-            setArticles(response.data.articles);
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const fetchHabits = () => {};
 
     const vacation = {
         key: 'vacation',
@@ -41,34 +51,39 @@ export default HomeScreen = (props) => {
     const massage = { key: 'massage', color: 'blue', selectedDotColor: 'blue' };
     const workout = { key: 'workout', color: 'green' };
 
+    const { navigation } = props;
+    const [habits, setHabits] = useState([]);
+
+    const renderItems = ({ item }) => (
+        <HabitItem
+            id={item.id}
+            title={item.title}
+            onPress={() =>
+                navigation.navigate('Habit', {
+                    habitId: item.id,
+                    habitTitle: item.title,
+                })
+            }
+        />
+    );
+
     return (
         <SafeAreaView style={styles.container}>
             <Calendar
                 markedDates={{
-                    '2020-12-25': {
+                    '2021-01-25': {
                         dots: [vacation, massage, workout],
                         selected: true,
                         selectedColor: 'red',
                     },
-                    '2020-12-26': { dots: [massage, workout], disabled: true },
+                    '2021-01-26': { dots: [massage, workout], disabled: true },
                 }}
                 markingType={'multi-dot'}
             />
             <FlatList
-                data={articles}
-                renderItem={({ item }) => (
-                    <ListItem
-                        imageUrl={item.urlToImage}
-                        title={item.title}
-                        author={item.author}
-                        onPress={() =>
-                            navigation.navigate('Article', {
-                                article: item,
-                            })
-                        }
-                    />
-                )}
-                keyExtractor={(item, index) => index.toString()}
+                data={DATA}
+                renderItem={renderItems}
+                keyExtractor={(item) => item.id}
             />
         </SafeAreaView>
     );
